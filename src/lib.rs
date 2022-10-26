@@ -3,15 +3,17 @@ use std::fs;
 
 mod input;
 
-pub fn run(unparsed_args: Vec<String>) -> Result<(), &'static str> {
+pub fn run(unparsed_args: Vec<String>) -> Result<(), String> {
     let args = parse_args(unparsed_args)?;
-    read_file(args.file_path())?;
+    if let Err(e) = read_file(args.file_path()) {
+        return Err(e.to_string());
+    }
     Ok(())
 }
 
-fn parse_args(mut unparsed_args: Vec<String>) -> Result<input::Args, &'static str> {
+fn parse_args(mut unparsed_args: Vec<String>) -> Result<input::Args, String> {
     if unparsed_args.len() != 3 {
-        return Err("Error! rgrep syntax is: rgrep <QUERY_STRING> <FILE_PATH>");
+        return Err("Error! rgrep syntax is: rgrep <QUERY_STRING> <FILE_PATH>".to_owned());
     }
     let file_path = unparsed_args.remove(2);
     let query = unparsed_args.remove(1);
